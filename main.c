@@ -1,14 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "vector.h"
 #include "banker.h"
+
+extern int NRES; 	// number of resource types
+extern int NPROC;	// number of processes
 
 int main(int argc, char *argv[])
 {
   // TODO: attempt to open scenario file and scan data into allocated structures
+  
+  //FILE HANDELING
+  
   FILE *fp = fopen(argv[1], "r");
-  int NRES; 	// number of resource types
-  int NPROC;	// number of processes
   int *resourceArray; //hold the resources
   int **maxMatrix; //hold the max matrix
   int **allocMatrix; //hold the allocation matrix
@@ -42,6 +47,21 @@ int main(int argc, char *argv[])
       allocMatrix[i][j] = nextRes;
     }
   }
+  //clone the resource array
+  cloneVector(resourceArray);
+
+  //SANITY CHECKS
+
+  //error message if the allocated resources exceed the total resources
+  if(compareResources(allocMatrix) == false) {
+    printf("Integrity test failed: allocated resources exceed total resources\n");
+    exit(0);
+  }
+  //error message if max exceeds thread needs
+  if(compareMatrices(maxMatrix, allocMatrix) == false) {
+    exit(0);
+  }
+
   // TODO: Run banker's safety algorithm
 
 

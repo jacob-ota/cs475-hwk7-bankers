@@ -1,2 +1,6 @@
 
 // TODO: function prototypes of vector and matrix operations
+void cloneVector(int *vector);
+bool compareMatrices(int **maxMatrix, int **allocMatrix);
+bool compareResources(int **allocMatrix);
+void printMatrix(int **matrix);
