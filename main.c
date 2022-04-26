@@ -12,8 +12,15 @@ int main(int argc, char *argv[])
   // TODO: attempt to open scenario file and scan data into allocated structures
   
   //---------FILE HANDELING------------
-
+  if(argc == 1) {
+    printf("Please enter in a file to be analyzed\n");
+    exit(0);
+  }
   FILE *fp = fopen(argv[1], "r");
+  if(fp == NULL) {
+    printf("File does not exist. Try again!\n");
+    exit(0);
+  }
   int *resourceArray; //hold the resources
   int **maxMatrix; //hold the max matrix
   int **allocMatrix; //hold the allocation matrix
@@ -61,6 +68,7 @@ int main(int argc, char *argv[])
   }
 
   // TODO: Run banker's safety algorithm
+  //create the need matrix
   int** needMatrix;
     needMatrix = (int **)malloc(NPROC * sizeof(int *));
     for(int i = 0; i < NPROC; i++) {
