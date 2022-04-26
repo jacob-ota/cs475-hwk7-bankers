@@ -6,18 +6,21 @@
 // TODO - Define vector and matrix operations
 int NPROC;
 int NRES;
-int *resourceArrayCopy; //hold the resources deep copy
 
 /**
  * Clone (deep copy) vectors/matrices
  * 
  * @param vector the vector of the resource array
+ * 
+ * @return a int array of the copied vector
  */
-void cloneVector(int *vector) {
+int* cloneVector(int *vector) {
+    int *resourceArrayCopy; //hold the resources deep copy
     resourceArrayCopy = (int *) malloc(NRES * sizeof(int)); //malloc the resource Array
     for(int i = 0; i < NRES; i++) {
         resourceArrayCopy[i] = vector[i];
     }
+    return resourceArrayCopy;
 }
 
 /**
@@ -48,10 +51,10 @@ bool compareMatrices(int **maxMatrix, int **allocMatrix) {
  * 
  * @return true if the allocated resources do not exceed the total number of resources, false otherwise 
  */
-bool compareResources(int **allocMatrix) {
+bool compareResources(int **allocMatrix, int *resourceArray) {
     for(int i = 0; i < NPROC; i++) {
         for(int j = 0; j < NRES; j++) {
-            if(allocMatrix[i][j] > resourceArrayCopy[j]) {
+            if(allocMatrix[i][j] > resourceArray[j]) {
                 return false;
             }
         }
@@ -61,9 +64,23 @@ bool compareResources(int **allocMatrix) {
 
 
 /**
- * Add/Subtract two vectors/matrices
+ * Subtract two vectors/matrices to create the Need Matrix
  * 
+ * @param maxMatrix the max Matrix
+ * @param allocMatrix the alloc matrix
+ * @param needMatrix the need Matrix to be initialized by adding the other matricies
+ * 
+ * @return the Need Matrix
  */
+int** createNeedMatrix(int** maxMatrix, int** allocMatrix, int** needMatrix) {
+    //allocate the need matrix
+    for(int i = 0; i < NPROC; i++) {
+        for(int j = 0; j < NRES; j++) {
+            needMatrix[i][j] = maxMatrix[i][j] - allocMatrix[i][j];
+        }
+    }
+    return needMatrix;
+}
 
 
 /**
