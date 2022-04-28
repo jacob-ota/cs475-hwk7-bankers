@@ -100,7 +100,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
             printf("T%d ", i);
         }
     }
-    printf("\n");
+    printf("can't finish\n");
     free(work);
     free(finished);
     free(trackProcesses);
