@@ -14,15 +14,13 @@ int NRES;
  *
  * @return a int array of the copied vector
  */
-int *cloneVector(int *vector)
+int *cloneVector(int *vector, int *copyInto)
 {
-    int *resourceArrayCopy;                                // hold the resources deep copy
-    resourceArrayCopy = (int *)malloc(NRES * sizeof(int)); // malloc the resource Array
     for (int i = 0; i < NRES; i++)
     {
-        resourceArrayCopy[i] = vector[i];
+        copyInto[i] = vector[i];
     }
-    return resourceArrayCopy;
+    return copyInto;
 }
 
 /**
@@ -94,7 +92,6 @@ bool compareNeedWork(int *needArray, int *workArray)
             return false;
         }
     }
-    printf("\n");
     return true;
 }
 
@@ -118,6 +115,39 @@ int **createNeedMatrix(int **maxMatrix, int **allocMatrix, int **needMatrix)
         }
     }
     return needMatrix;
+}
+
+/**
+ * Add up all alloc matrix resources to get an alloc total
+ *
+ * @param alloctotal the max Matrix
+ * @param allocMatrix the alloc matrix
+ * 
+ * @return the alloctotal array
+ */
+int *createAllocTotal(int *allocTotal, int **allocMatrix)
+{
+    for(int i = 0; i < NPROC; i++) {
+        for(int j = 0; j < NRES; j++) {
+            allocTotal[j] += allocMatrix[i][j];
+        }
+    }
+    return allocTotal;
+}
+
+/**
+ * Subtract the resource array from the alloc total to get the available resources 
+ * 
+ * @param resourceArray the resource array
+ * @param allocTotal the total of allocated resources
+ * 
+ * @return the updated resource array
+ */
+int *subResourceAlloc(int *resourceArray, int *allocTotal) {
+    for(int i = 0; i < NRES; i++) {
+        resourceArray[i] -= allocTotal[i];
+    }
+    return resourceArray;
 }
 
 /**

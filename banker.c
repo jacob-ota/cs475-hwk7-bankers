@@ -21,7 +21,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
 {
     //clone the resource available array
     int *work = (int *)malloc(NRES * sizeof(int));
-    work = cloneVector(resources);
+    work = cloneVector(resources, work);
     //initialize finished array to all 0's
     int *finished = (int *)malloc(NPROC * sizeof(int));
     for (int i = 0; i < NPROC; i++)
@@ -32,6 +32,8 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
     //tracker: tracks order of processes when completed stores into trackprocesses
     int tracker = 0;
     int counter = indexUnfinished(finished, 0);
+    //make a counter for if the process goes to long and is deemed unsafe
+    int unsafe = 0;
     while (!isFinished(finished))
     {
         if (compareNeedWork(need[counter], work) && isidxUnfinished(finished, counter))
@@ -68,6 +70,10 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
             {
                 counter = indexUnfinished(finished, counter);
             }
+            unsafe++;
+        }
+        if(unsafe == 100) {
+            break;
         }
     }
     if (isFinished(finished))
@@ -79,6 +85,10 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
             printf("T%d ", trackProcesses[i]);
         }
         printf("\n");
+        //free up work, finish and track processes
+        free(work);
+        free(finished);
+        free(trackProcesses);
         return true;
     }
     //print out the unsafe and what did not finish
@@ -91,6 +101,9 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
         }
     }
     printf("\n");
+    free(work);
+    free(finished);
+    free(trackProcesses);
     return false;
 }
 
@@ -132,7 +145,7 @@ int indexUnfinished(int *finished, int counter)
             return i;
         }
     }
-    return NULL;
+    return -1;
 }
 
 /**

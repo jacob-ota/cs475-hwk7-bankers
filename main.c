@@ -84,6 +84,10 @@ int main(int argc, char *argv[])
 
   // ---------- BANKERS -----------
 
+  //get available array (available = resource array - allocated matrix total)
+  int *allocTotal = (int *)malloc(NRES * sizeof(int));
+  allocTotal = createAllocTotal(allocTotal, allocMatrix);
+  resourceArray = subResourceAlloc(resourceArray, allocTotal);
   // create the need matrix
   int **needMatrix;
   needMatrix = (int **)malloc(NPROC * sizeof(int *));
@@ -95,5 +99,11 @@ int main(int argc, char *argv[])
   needMatrix = createNeedMatrix(maxMatrix, allocMatrix, needMatrix);
   //run the safety algorithm
   safetyAlgo(resourceArray, allocMatrix, needMatrix);
+  //free alloc matrix, max matrix, and resource vector, and need matrix
+  free(allocMatrix);
+  free(maxMatrix);
+  free(resourceArray);
+  free(needMatrix);
+  free(allocTotal);
   return 0;
 }
