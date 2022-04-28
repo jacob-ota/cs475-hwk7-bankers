@@ -10,28 +10,40 @@ int NRES;
 
 /**
  * Bankers Safety Algorithm runs here
- *
+ * 
+ * @param resources the available array
+ * @param alloc the allocation matrix
+ * @param need the need matrix
+ * 
+ * @return true if the algorithm is safe, false otherwise
  */
 bool safetyAlgo(int *resources, int **alloc, int **need)
 {
+    //clone the resource available array
     int *work = (int *)malloc(NRES * sizeof(int));
     work = cloneVector(resources);
+    //initialize finished array to all 0's
     int *finished = (int *)malloc(NPROC * sizeof(int));
     for (int i = 0; i < NPROC; i++)
     {
         finished[i] = 0;
     }
     int *trackProcesses = (int *)malloc(NPROC * sizeof(int));
+    //tracker: tracks order of processes when completed stores into trackprocesses
     int tracker = 0;
     int counter = indexUnfinished(finished, 0);
     while (!isFinished(finished))
     {
         if (compareNeedWork(need[counter], work) && isidxUnfinished(finished, counter))
         {
+            //work += alloc[i]
             work = createNewWork(work, alloc[counter]);
+            //update counter
             finished[counter] = 1;
+            //store thread in order to print out later
             trackProcesses[tracker] = counter;
             counter++;
+            //update the counter so that it can get the next index unfinished
             if (counter >= NPROC)
             {
                 counter = 0;
@@ -45,6 +57,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
         }
         else
         {
+            //update counter so it can get the next index unfinished
             counter++;
             if (counter >= NPROC)
             {
@@ -59,6 +72,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
     }
     if (isFinished(finished))
     {
+        //if all threads finish then print out the safe solution
         printf("SAFE: ");
         for (int i = 0; i < NPROC; i++)
         {
@@ -67,6 +81,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
         printf("\n");
         return true;
     }
+    //print out the unsafe and what did not finish
     printf("UNSAFE: ");
     for (int i = 0; i < NPROC; i++)
     {
@@ -88,6 +103,7 @@ bool safetyAlgo(int *resources, int **alloc, int **need)
  */
 bool isFinished(int *finished)
 {
+    //check if any spots in finished are equal to 0
     for (int i = 0; i < NPROC; i++)
     {
         if (finished[i] == 0)
@@ -108,6 +124,7 @@ bool isFinished(int *finished)
  */
 int indexUnfinished(int *finished, int counter)
 {
+    //return the index of an unfinished spot
     for (int i = counter; i < NPROC; i++)
     {
         if (finished[i] == 0)
@@ -115,7 +132,7 @@ int indexUnfinished(int *finished, int counter)
             return i;
         }
     }
-    return 0;
+    return NULL;
 }
 
 /**
@@ -128,6 +145,7 @@ int indexUnfinished(int *finished, int counter)
  */
 bool isidxUnfinished(int *finished, int counter)
 {
+    //check if a certain spot in the finished array is unfinished
     for (int i = 0; i < NPROC; i++)
     {
         if (finished[i] == 0 && i == counter)

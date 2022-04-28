@@ -35,6 +35,7 @@ int *cloneVector(int *vector)
  */
 bool compareMatrices(int **maxMatrix, int **allocMatrix)
 {
+    //compare the matrices if max at a certain spot is lower than alloc print out an error message
     for (int i = 0; i < NPROC; i++)
     {
         for (int j = 0; j < NRES; j++)
@@ -60,6 +61,7 @@ bool compareMatrices(int **maxMatrix, int **allocMatrix)
  */
 bool compareResources(int **allocMatrix, int *resourceArray)
 {
+    //if alloc at any spot is greater than its resource available then it is false
     for (int i = 0; i < NPROC; i++)
     {
         for (int j = 0; j < NRES; j++)
@@ -83,13 +85,16 @@ bool compareResources(int **allocMatrix, int *resourceArray)
  */
 bool compareNeedWork(int *needArray, int *workArray)
 {
+    //if the need array at i is greater than the work array at i then it is false
     for (int i = 0; i < NRES; i++)
     {
+        //checks if need[i] <= work
         if (needArray[i] > workArray[i])
         {
             return false;
         }
     }
+    printf("\n");
     return true;
 }
 
@@ -104,9 +109,9 @@ bool compareNeedWork(int *needArray, int *workArray)
  */
 int **createNeedMatrix(int **maxMatrix, int **allocMatrix, int **needMatrix)
 {
-    // allocate the need matrix
     for (int i = 0; i < NPROC; i++)
     {
+        //create the need matrix by subtracting the max matrix by the alloc matrix
         for (int j = 0; j < NRES; j++)
         {
             needMatrix[i][j] = maxMatrix[i][j] - allocMatrix[i][j];
@@ -125,6 +130,7 @@ int **createNeedMatrix(int **maxMatrix, int **allocMatrix, int **needMatrix)
  */
 int *createNewWork(int *workArray, int *alloc)
 {
+    //work += alloc[i]
     for (int i = 0; i < NRES; i++)
     {
         workArray[i] += alloc[i];

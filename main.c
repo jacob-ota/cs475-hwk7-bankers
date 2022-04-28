@@ -12,12 +12,15 @@ int main(int argc, char *argv[])
   // TODO: attempt to open scenario file and scan data into allocated structures
 
   //---------FILE HANDELING------------
+
+  //if there is no file name given at all
   if (argc == 1)
   {
     printf("Please enter in a file to be analyzed\n");
     exit(0);
   }
   FILE *fp = fopen(argv[1], "r");
+  //if the file in choice is non existant
   if (fp == NULL)
   {
     printf("File does not exist. Try again!\n");
@@ -78,6 +81,9 @@ int main(int argc, char *argv[])
   }
 
   // TODO: Run banker's safety algorithm
+
+  // ---------- BANKERS -----------
+
   // create the need matrix
   int **needMatrix;
   needMatrix = (int **)malloc(NPROC * sizeof(int *));
@@ -85,7 +91,9 @@ int main(int argc, char *argv[])
   {
     needMatrix[i] = (int *)malloc(NRES * sizeof(int));
   }
+  //use the createNeedMatrix function to create the need matrix
   needMatrix = createNeedMatrix(maxMatrix, allocMatrix, needMatrix);
+  //run the safety algorithm
   safetyAlgo(resourceArray, allocMatrix, needMatrix);
   return 0;
 }
